@@ -1,13 +1,23 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import HeroSection from "@/components/HeroSection";
+import StorySection from "@/components/StorySection";
+import PhotoGallery from "@/components/PhotoGallery";
+import LoveNote from "@/components/LoveNote";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <main className="min-h-screen">
+      <HeroSection />
+      <StorySection />
+      <PhotoGallery />
+      <LoveNote />
+      
+      {/* Footer */}
+      <footer className="py-8 bg-background border-t border-border">
+        <p className="text-center font-serif text-sm text-muted-foreground italic">
+          Made with love ♡
+        </p>
+      </footer>
+    </main>
   );
 };
 
