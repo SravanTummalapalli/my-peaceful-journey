@@ -41,8 +41,17 @@ const LoveNote = () => {
             transition={{ duration: 1, delay: 0.5 }}
             className="mt-12 font-serif text-xl italic text-primary"
           >
-            Forever yours ♡
+            Forever yours, Sravan ♡
           </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="mt-4 font-serif text-lg text-muted-foreground"
+          >
+            For my Divya
+          </motion.p>
         </motion.div>
       </div>
     </section>
