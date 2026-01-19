@@ -39,7 +39,7 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="font-sans text-lg md:text-xl text-primary-foreground/90 max-w-2xl mx-auto leading-relaxed font-light"
         >
-          A love letter to the woman who brought peace to my soul 
+          A love letter from Sravan to Divya — the woman who brought peace to my soul 
           and light to my darkest days
         </motion.p>
 
