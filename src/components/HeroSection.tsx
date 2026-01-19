@@ -29,8 +29,8 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="font-serif text-5xl md:text-7xl lg:text-8xl font-light mb-6 text-primary-foreground tracking-wide"
         >
-          You Changed
-          <span className="block italic text-primary">Everything</span>
+          Sravan & Divya
+          <span className="block italic text-primary text-3xl md:text-4xl lg:text-5xl mt-4">A Love Story</span>
         </motion.h1>
 
         <motion.p
