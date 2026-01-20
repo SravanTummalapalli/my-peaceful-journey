@@ -2,11 +2,20 @@ import HeroSection from "@/components/HeroSection";
 import StorySection from "@/components/StorySection";
 import PhotoGallery from "@/components/PhotoGallery";
 import LoveNote from "@/components/LoveNote";
+import FloatingHearts from "@/components/FloatingHearts";
+import LoveCounter from "@/components/LoveCounter";
+import Timeline from "@/components/Timeline";
 
 const Index = () => {
+  // Set your relationship start date here
+  const relationshipStartDate = new Date("2023-01-01");
+
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen relative">
+      <FloatingHearts />
       <HeroSection />
+      <LoveCounter targetDate={relationshipStartDate} />
+      <Timeline />
       <StorySection />
       <PhotoGallery />
       <LoveNote />
