@@ -5,12 +5,12 @@ import heroBackground from "@/assets/hero-background.jpg";
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
+      {/* Background Image with Parallax Effect */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
         style={{ backgroundImage: `url(${heroBackground})` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-foreground/30 via-foreground/20 to-background/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-foreground/40 via-foreground/20 to-background/90" />
       </div>
 
       {/* Content */}
