@@ -1,50 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Sparkles, X, Diamond } from "lucide-react";
+import { Heart, X, Diamond, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ProposeAnimation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showMessage, setShowMessage] = useState(false);
+  const [stage, setStage] = useState(0); // 0: sunset, 1: walking, 2: kneeling, 3: message, 4: accepted
   const [accepted, setAccepted] = useState(false);
 
   const handlePropose = () => {
     setIsOpen(true);
-    setShowMessage(false);
+    setStage(0);
     setAccepted(false);
-    setTimeout(() => setShowMessage(true), 2000);
+    
+    // Progressive reveal sequence
+    setTimeout(() => setStage(1), 1500); // Beach appears
+    setTimeout(() => setStage(2), 3500); // Couple walks in
+    setTimeout(() => setStage(3), 5500); // Proposal moment
   };
 
   const handleAccept = () => {
     setAccepted(true);
+    setStage(4);
   };
 
   const handleClose = () => {
     setIsOpen(false);
-    setShowMessage(false);
+    setStage(0);
     setAccepted(false);
   };
 
-  // Generate floating hearts
-  const floatingHearts = Array.from({ length: 30 }, (_, i) => ({
+  // Generate wave particles
+  const waveParticles = Array.from({ length: 15 }, (_, i) => ({
     id: i,
-    left: Math.random() * 100,
-    delay: Math.random() * 2,
-    duration: 3 + Math.random() * 3,
-    size: 16 + Math.random() * 24,
+    delay: i * 0.3,
   }));
 
-  // Generate sparkles
-  const sparkles = Array.from({ length: 20 }, (_, i) => ({
+  // Generate footprints
+  const footprints = Array.from({ length: 8 }, (_, i) => ({
     id: i,
-    left: Math.random() * 100,
-    top: Math.random() * 100,
-    delay: Math.random() * 1.5,
+    left: 15 + i * 10,
+    delay: 2 + i * 0.2,
+    rotate: i % 2 === 0 ? -15 : 15,
+  }));
+
+  // Generate birds
+  const birds = Array.from({ length: 5 }, (_, i) => ({
+    id: i,
+    startX: -50 - i * 30,
+    y: 10 + i * 5,
+    delay: i * 0.5,
+  }));
+
+  // Generate sparkles for celebration
+  const celebrationSparkles = Array.from({ length: 40 }, (_, i) => ({
+    id: i,
+    x: (Math.random() - 0.5) * 800,
+    y: (Math.random() - 0.5) * 800,
+    delay: Math.random() * 0.5,
   }));
 
   return (
     <>
-      {/* Propose Button - Fixed at bottom right */}
+      {/* Propose Button */}
       <motion.div
         className="fixed bottom-8 right-8 z-40"
         initial={{ scale: 0 }}
@@ -53,7 +71,7 @@ const ProposeAnimation = () => {
       >
         <Button
           onClick={handlePropose}
-          className="group relative bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white px-6 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+          className="group relative bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-6 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
         >
           <Diamond className="w-5 h-5 mr-2 group-hover:animate-bounce" />
           <span className="font-serif text-lg">Propose</span>
@@ -67,279 +85,381 @@ const ProposeAnimation = () => {
         </Button>
       </motion.div>
 
-      {/* Proposal Animation Modal */}
+      {/* Beach Sunset Proposal Modal */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-b from-rose-950/95 via-pink-950/95 to-purple-950/95 backdrop-blur-sm"
+            className="fixed inset-0 z-50 overflow-hidden"
           >
-            {/* Close button */}
-            <button
-              onClick={handleClose}
-              className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-50"
-            >
-              <X className="w-8 h-8" />
-            </button>
+            {/* Gradient Sky Background */}
+            <motion.div
+              className="absolute inset-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              style={{
+                background: "linear-gradient(180deg, #1a1a2e 0%, #16213e 15%, #e94560 40%, #ff6b6b 55%, #ffd93d 75%, #ff8c00 100%)",
+              }}
+            />
 
-            {/* Floating Hearts Background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {floatingHearts.map((heart) => (
+            {/* Animated Sun */}
+            <motion.div
+              className="absolute left-1/2 transform -translate-x-1/2"
+              initial={{ top: "30%", scale: 1.5 }}
+              animate={{ top: "45%", scale: 1 }}
+              transition={{ duration: 3, ease: "easeOut" }}
+            >
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ repeat: Infinity, duration: 3 }}
+                className="relative"
+              >
+                <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-b from-yellow-200 via-orange-300 to-orange-500 shadow-[0_0_100px_50px_rgba(255,200,100,0.4)]" />
+                {/* Sun reflection rays */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Sun className="w-20 h-20 md:w-28 md:h-28 text-yellow-100 opacity-60" />
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Flying Birds */}
+            {birds.map((bird) => (
+              <motion.div
+                key={bird.id}
+                className="absolute text-gray-800 text-2xl"
+                style={{ top: `${bird.y}%` }}
+                initial={{ x: bird.startX, opacity: 0 }}
+                animate={{ x: "100vw", opacity: [0, 1, 1, 0] }}
+                transition={{
+                  duration: 8,
+                  delay: bird.delay,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              >
+                🐦
+              </motion.div>
+            ))}
+
+            {/* Ocean */}
+            <motion.div
+              className="absolute bottom-0 left-0 right-0 h-[35%]"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
+            >
+              {/* Water gradient */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: "linear-gradient(180deg, rgba(255,140,0,0.6) 0%, #1e3a5f 30%, #0d1b2a 100%)",
+                }}
+              />
+              
+              {/* Sun reflection on water */}
+              <motion.div
+                className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-full"
+                style={{
+                  background: "linear-gradient(180deg, rgba(255,215,0,0.6) 0%, rgba(255,140,0,0.3) 50%, transparent 100%)",
+                }}
+                animate={{ scaleX: [1, 1.2, 1] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              />
+
+              {/* Animated Waves */}
+              {waveParticles.map((wave) => (
                 <motion.div
-                  key={heart.id}
-                  className="absolute"
-                  style={{ left: `${heart.left}%` }}
-                  initial={{ y: "100vh", opacity: 0 }}
-                  animate={{ y: "-100vh", opacity: [0, 1, 1, 0] }}
+                  key={wave.id}
+                  className="absolute w-full h-4 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                  style={{ top: `${5 + wave.id * 6}%` }}
+                  animate={{ x: ["-100%", "100%"] }}
                   transition={{
-                    duration: heart.duration,
-                    delay: heart.delay,
+                    duration: 4,
+                    delay: wave.delay,
                     repeat: Infinity,
                     ease: "linear",
                   }}
+                />
+              ))}
+            </motion.div>
+
+            {/* Beach/Sand */}
+            <motion.div
+              className="absolute bottom-0 left-0 right-0 h-[18%]"
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              transition={{ delay: 1, duration: 1, ease: "easeOut" }}
+              style={{
+                background: "linear-gradient(180deg, #c2956e 0%, #a67c52 50%, #8b6b45 100%)",
+              }}
+            >
+              {/* Sand texture */}
+              <div className="absolute inset-0 opacity-30" 
+                style={{
+                  backgroundImage: "radial-gradient(circle at 20% 50%, #d4a76a 1px, transparent 1px), radial-gradient(circle at 80% 30%, #d4a76a 1px, transparent 1px)",
+                  backgroundSize: "20px 20px",
+                }}
+              />
+            </motion.div>
+
+            {/* Footprints in sand */}
+            <AnimatePresence>
+              {stage >= 2 && footprints.map((fp) => (
+                <motion.div
+                  key={fp.id}
+                  className="absolute bottom-[12%] text-2xl opacity-40"
+                  style={{ 
+                    left: `${fp.left}%`,
+                    transform: `rotate(${fp.rotate}deg)`,
+                  }}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 0.4, scale: 1 }}
+                  transition={{ delay: fp.delay - 2, duration: 0.3 }}
                 >
-                  <Heart
-                    className="text-pink-400/40 fill-pink-400/20"
-                    style={{ width: heart.size, height: heart.size }}
-                  />
+                  👣
                 </motion.div>
               ))}
-            </div>
+            </AnimatePresence>
 
-            {/* Sparkles */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {sparkles.map((sparkle) => (
+            {/* Couple Silhouettes on Beach */}
+            <AnimatePresence>
+              {stage >= 2 && (
                 <motion.div
-                  key={sparkle.id}
-                  className="absolute"
-                  style={{ left: `${sparkle.left}%`, top: `${sparkle.top}%` }}
-                  animate={{
-                    opacity: [0, 1, 0],
-                    scale: [0.5, 1, 0.5],
-                  }}
-                  transition={{
-                    duration: 2,
-                    delay: sparkle.delay,
-                    repeat: Infinity,
-                  }}
+                  className="absolute bottom-[15%] left-1/2 transform -translate-x-1/2 flex items-end gap-6"
+                  initial={{ x: "-50%", scale: 0.3, opacity: 0 }}
+                  animate={{ x: "-50%", scale: 1, opacity: 1 }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
                 >
-                  <Sparkles className="w-4 h-4 text-yellow-300" />
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Main Content */}
-            <div className="relative z-10 text-center px-6">
-              {/* Couple Silhouettes */}
-              <div className="flex items-end justify-center gap-4 md:gap-8 mb-8">
-                {/* Sravan - Left figure (proposing) */}
-                <motion.div
-                  initial={{ x: -100, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.3 }}
-                  className="relative"
-                >
-                  <div className="flex flex-col items-center">
-                    {/* Name Tag */}
+                  {/* Sravan - Kneeling */}
+                  <motion.div
+                    className="relative flex flex-col items-center"
+                    initial={{ x: -50 }}
+                    animate={{ x: 0 }}
+                    transition={{ delay: 0.5, duration: 1 }}
+                  >
                     <motion.div
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1 }}
-                      className="mb-3 px-4 py-1 bg-blue-500/80 rounded-full"
+                      transition={{ delay: 1.5 }}
+                      className="mb-2 px-3 py-1 bg-blue-600/90 rounded-full shadow-lg"
                     >
-                      <span className="font-serif text-white text-sm md:text-base">Sravan</span>
+                      <span className="font-serif text-white text-sm">Sravan</span>
                     </motion.div>
                     
-                    {/* Silhouette - Kneeling */}
                     <motion.div
-                      animate={{ y: [0, -5, 0] }}
+                      animate={stage >= 3 ? { y: [0, -3, 0] } : {}}
                       transition={{ repeat: Infinity, duration: 2 }}
-                      className="relative"
                     >
-                      <svg viewBox="0 0 100 120" className="w-24 h-32 md:w-32 md:h-40">
-                        {/* Head */}
-                        <circle cx="50" cy="20" r="18" fill="url(#gradientBlue)" />
-                        {/* Body - kneeling pose */}
-                        <ellipse cx="50" cy="55" rx="20" ry="25" fill="url(#gradientBlue)" />
-                        {/* Kneeling leg */}
-                        <ellipse cx="40" cy="95" rx="12" ry="20" fill="url(#gradientBlue)" />
-                        {/* Extended leg */}
-                        <ellipse cx="65" cy="85" rx="18" ry="10" fill="url(#gradientBlue)" transform="rotate(-20 65 85)" />
-                        {/* Arms reaching up */}
-                        <ellipse cx="35" cy="50" rx="8" ry="20" fill="url(#gradientBlue)" transform="rotate(30 35 50)" />
-                        <ellipse cx="65" cy="45" rx="8" ry="22" fill="url(#gradientBlue)" transform="rotate(-20 65 45)" />
-                        
+                      {/* Silhouette figure kneeling */}
+                      <svg viewBox="0 0 80 100" className="w-20 h-28 md:w-28 md:h-36 drop-shadow-2xl">
                         <defs>
-                          <linearGradient id="gradientBlue" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#3B82F6" />
-                            <stop offset="100%" stopColor="#1D4ED8" />
+                          <linearGradient id="sravanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#1a1a2e" />
+                            <stop offset="100%" stopColor="#0f0f23" />
                           </linearGradient>
                         </defs>
+                        <circle cx="40" cy="18" r="14" fill="url(#sravanGrad)" />
+                        <ellipse cx="40" cy="48" rx="16" ry="22" fill="url(#sravanGrad)" />
+                        <ellipse cx="32" cy="82" rx="10" ry="16" fill="url(#sravanGrad)" />
+                        <ellipse cx="55" cy="75" rx="14" ry="8" fill="url(#sravanGrad)" transform="rotate(-15 55 75)" />
+                        <ellipse cx="28" cy="45" rx="6" ry="16" fill="url(#sravanGrad)" transform="rotate(35 28 45)" />
+                        <ellipse cx="52" cy="38" rx="6" ry="18" fill="url(#sravanGrad)" transform="rotate(-25 52 38)" />
                       </svg>
                       
-                      {/* Ring in hand */}
+                      {/* Ring box */}
                       <motion.div
-                        className="absolute -top-2 right-2"
+                        className="absolute -top-2 right-0"
                         animate={{ 
-                          rotate: [0, 10, -10, 0],
-                          scale: [1, 1.1, 1]
+                          rotate: stage >= 3 ? [0, 5, -5, 0] : 0,
+                          scale: stage >= 3 ? [1, 1.1, 1] : 1,
                         }}
-                        transition={{ repeat: Infinity, duration: 2 }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
                       >
-                        <div className="w-6 h-6 md:w-8 md:h-8 rounded-full border-4 border-yellow-400 bg-yellow-300/50 flex items-center justify-center">
-                          <div className="w-2 h-2 md:w-3 md:h-3 bg-white rounded-full shadow-lg" />
+                        <div className="w-8 h-8 bg-gradient-to-br from-red-800 to-red-950 rounded-sm shadow-lg flex items-center justify-center border border-red-700">
+                          <div className="w-4 h-4 rounded-full border-2 border-yellow-400 bg-gradient-to-br from-yellow-200 to-yellow-400 flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 bg-white rounded-full shadow-lg" />
+                          </div>
                         </div>
                       </motion.div>
                     </motion.div>
-                  </div>
-                </motion.div>
-
-                {/* Heart between them */}
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 1.5, type: "spring" }}
-                  className="absolute left-1/2 top-1/3 transform -translate-x-1/2"
-                >
-                  <motion.div
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ repeat: Infinity, duration: 1 }}
-                  >
-                    <Heart className="w-12 h-12 md:w-16 md:h-16 text-red-500 fill-red-500 drop-shadow-lg" />
                   </motion.div>
-                </motion.div>
 
-                {/* Divya - Right figure (standing) */}
-                <motion.div
-                  initial={{ x: 100, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 1, delay: 0.5 }}
-                  className="relative"
-                >
-                  <div className="flex flex-col items-center">
-                    {/* Name Tag */}
+                  {/* Heart between */}
+                  <motion.div
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 2, type: "spring" }}
+                    className="absolute left-1/2 -top-8 transform -translate-x-1/2"
+                  >
+                    <motion.div
+                      animate={{ scale: [1, 1.3, 1], y: [0, -5, 0] }}
+                      transition={{ repeat: Infinity, duration: 1.2 }}
+                    >
+                      <Heart className="w-10 h-10 text-red-500 fill-red-500 drop-shadow-lg" />
+                    </motion.div>
+                  </motion.div>
+
+                  {/* Divya - Standing */}
+                  <motion.div
+                    className="relative flex flex-col items-center"
+                    initial={{ x: 50 }}
+                    animate={{ x: 0 }}
+                    transition={{ delay: 0.5, duration: 1 }}
+                  >
                     <motion.div
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.2 }}
-                      className="mb-3 px-4 py-1 bg-pink-500/80 rounded-full"
+                      transition={{ delay: 1.7 }}
+                      className="mb-2 px-3 py-1 bg-pink-600/90 rounded-full shadow-lg"
                     >
-                      <span className="font-serif text-white text-sm md:text-base">Divya</span>
+                      <span className="font-serif text-white text-sm">Divya</span>
                     </motion.div>
                     
-                    {/* Silhouette - Standing with hands on heart */}
                     <motion.div
-                      animate={{ y: [0, -3, 0] }}
-                      transition={{ repeat: Infinity, duration: 2.5, delay: 0.5 }}
+                      animate={stage >= 3 ? { y: [0, -2, 0] } : {}}
+                      transition={{ repeat: Infinity, duration: 2.5, delay: 0.3 }}
                     >
-                      <svg viewBox="0 0 100 140" className="w-24 h-36 md:w-32 md:h-44">
-                        {/* Head */}
-                        <circle cx="50" cy="20" r="18" fill="url(#gradientPink)" />
-                        {/* Hair accent */}
-                        <ellipse cx="50" cy="12" rx="20" ry="10" fill="url(#gradientPink)" />
-                        {/* Body - dress shape */}
-                        <path d="M 30 40 Q 25 80 20 130 L 80 130 Q 75 80 70 40 Q 50 35 30 40" fill="url(#gradientPink)" />
-                        {/* Arms on chest */}
-                        <ellipse cx="40" cy="55" rx="8" ry="15" fill="url(#gradientPink)" transform="rotate(20 40 55)" />
-                        <ellipse cx="60" cy="55" rx="8" ry="15" fill="url(#gradientPink)" transform="rotate(-20 60 55)" />
-                        
+                      <svg viewBox="0 0 70 120" className="w-18 h-32 md:w-24 md:h-40 drop-shadow-2xl">
                         <defs>
-                          <linearGradient id="gradientPink" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#EC4899" />
-                            <stop offset="100%" stopColor="#DB2777" />
+                          <linearGradient id="divyaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stopColor="#1a1a2e" />
+                            <stop offset="100%" stopColor="#0f0f23" />
                           </linearGradient>
                         </defs>
+                        <circle cx="35" cy="16" r="12" fill="url(#divyaGrad)" />
+                        <ellipse cx="35" cy="10" rx="14" ry="8" fill="url(#divyaGrad)" />
+                        <path d="M 18 32 Q 12 70 10 110 L 60 110 Q 58 70 52 32 Q 35 28 18 32" fill="url(#divyaGrad)" />
+                        <ellipse cx="26" cy="48" rx="6" ry="14" fill="url(#divyaGrad)" transform="rotate(25 26 48)" />
+                        <ellipse cx="44" cy="48" rx="6" ry="14" fill="url(#divyaGrad)" transform="rotate(-25 44 48)" />
                       </svg>
                     </motion.div>
-                  </div>
+                  </motion.div>
                 </motion.div>
-              </div>
+              )}
+            </AnimatePresence>
 
-              {/* Proposal Message */}
-              <AnimatePresence>
-                {showMessage && !accepted && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -30 }}
-                    transition={{ duration: 0.8 }}
-                    className="mt-8"
+            {/* Proposal Message */}
+            <AnimatePresence>
+              {stage >= 3 && !accepted && (
+                <motion.div
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -30 }}
+                  transition={{ duration: 1 }}
+                  className="absolute top-[10%] left-0 right-0 text-center px-6 z-20"
+                >
+                  <motion.h2
+                    className="font-serif text-4xl md:text-6xl lg:text-7xl text-white mb-4 drop-shadow-lg"
+                    style={{ textShadow: "2px 2px 20px rgba(0,0,0,0.5)" }}
+                    animate={{ scale: [1, 1.02, 1] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
                   >
-                    <h2 className="font-serif text-3xl md:text-5xl lg:text-6xl text-white mb-4 italic">
-                      Will You Marry Me?
-                    </h2>
-                    <p className="font-sans text-lg md:text-xl text-pink-200 mb-8 max-w-md mx-auto">
-                      Divya, you are my everything. Will you make me the happiest person in the world?
-                    </p>
-                    
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.5, type: "spring" }}
+                    Will You Marry Me?
+                  </motion.h2>
+                  <motion.p 
+                    className="font-sans text-lg md:text-xl text-orange-100 mb-8 max-w-lg mx-auto drop-shadow-lg"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    Divya, as the sun sets on this beautiful moment, my love for you only grows brighter. Will you be my forever?
+                  </motion.p>
+                  
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 1, type: "spring", stiffness: 200 }}
+                  >
+                    <Button
+                      onClick={handleAccept}
+                      className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-12 py-7 rounded-full text-xl font-serif shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 border-2 border-white/30"
                     >
-                      <Button
-                        onClick={handleAccept}
-                        className="bg-gradient-to-r from-green-400 to-emerald-500 hover:from-green-500 hover:to-emerald-600 text-white px-10 py-6 rounded-full text-xl font-serif shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                      >
-                        <Heart className="w-6 h-6 mr-2 fill-white" />
-                        Yes, I Do! ♡
-                      </Button>
-                    </motion.div>
+                      <Heart className="w-6 h-6 mr-3 fill-white animate-pulse" />
+                      Yes, Forever! 💍
+                    </Button>
                   </motion.div>
-                )}
-              </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-              {/* Accepted Celebration */}
-              <AnimatePresence>
-                {accepted && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="mt-8"
-                  >
+            {/* Celebration on Accept */}
+            <AnimatePresence>
+              {accepted && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="absolute inset-0 flex items-center justify-center z-30"
+                >
+                  {/* Fireworks/Sparkles */}
+                  {celebrationSparkles.map((sparkle) => (
                     <motion.div
-                      animate={{ rotate: [0, 10, -10, 0] }}
-                      transition={{ repeat: Infinity, duration: 0.5 }}
+                      key={sparkle.id}
+                      className="absolute text-3xl"
+                      initial={{ x: 0, y: 0, opacity: 1, scale: 0 }}
+                      animate={{
+                        x: sparkle.x,
+                        y: sparkle.y,
+                        opacity: [1, 1, 0],
+                        scale: [0, 1.5, 0],
+                        rotate: Math.random() * 720,
+                      }}
+                      transition={{ duration: 2.5, delay: sparkle.delay, ease: "easeOut" }}
+                      style={{ left: "50%", top: "40%" }}
                     >
-                      <h2 className="font-serif text-4xl md:text-6xl lg:text-7xl text-white mb-4">
-                        🎉 She Said Yes! 🎉
-                      </h2>
+                      {["💕", "💖", "✨", "🎆", "💍", "❤️", "🌟", "💫"][Math.floor(Math.random() * 8)]}
                     </motion.div>
-                    <p className="font-serif text-xl md:text-2xl text-pink-200 italic">
-                      Forever & Always - Sravan ♡ Divya
-                    </p>
-                    
-                    {/* Confetti burst */}
-                    {Array.from({ length: 50 }).map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="absolute text-2xl"
-                        initial={{
-                          x: 0,
-                          y: 0,
-                          opacity: 1,
-                        }}
-                        animate={{
-                          x: (Math.random() - 0.5) * 600,
-                          y: (Math.random() - 0.5) * 600,
-                          opacity: 0,
-                          rotate: Math.random() * 720,
-                        }}
-                        transition={{ duration: 2, ease: "easeOut" }}
-                        style={{
-                          left: "50%",
-                          top: "50%",
-                        }}
-                      >
-                        {["💕", "💖", "✨", "🎊", "💍", "❤️"][Math.floor(Math.random() * 6)]}
-                      </motion.div>
-                    ))}
+                  ))}
+
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 100 }}
+                    className="text-center z-40 bg-black/30 backdrop-blur-sm px-12 py-8 rounded-3xl"
+                  >
+                    <motion.h2
+                      className="font-serif text-5xl md:text-7xl text-white mb-6"
+                      animate={{ 
+                        scale: [1, 1.05, 1],
+                        textShadow: [
+                          "0 0 20px rgba(255,255,255,0.5)",
+                          "0 0 40px rgba(255,200,100,0.8)",
+                          "0 0 20px rgba(255,255,255,0.5)",
+                        ]
+                      }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                    >
+                      She Said Yes! 💍
+                    </motion.h2>
+                    <motion.p
+                      className="font-serif text-2xl md:text-3xl text-orange-200"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      Sravan ♡ Divya
+                    </motion.p>
+                    <motion.p
+                      className="font-sans text-lg text-white/80 mt-4"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1 }}
+                    >
+                      Forever begins now... 🌅
+                    </motion.p>
                   </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Close button */}
+            <button
+              onClick={handleClose}
+              className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-50 bg-black/20 rounded-full p-2"
+            >
+              <X className="w-8 h-8" />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
