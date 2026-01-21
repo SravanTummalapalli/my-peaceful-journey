@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, X, Diamond, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ProposeAnimation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [stage, setStage] = useState(0); // 0: sunset, 1: walking, 2: kneeling, 3: message, 4: accepted
+  const [stage, setStage] = useState(0); // 0: sunset, 1: beach, 2: sravan walking, 3: sravan kneeling, 4: message, 5: accepted
   const [accepted, setAccepted] = useState(false);
 
   const handlePropose = () => {
@@ -14,14 +14,15 @@ const ProposeAnimation = () => {
     setAccepted(false);
     
     // Progressive reveal sequence
-    setTimeout(() => setStage(1), 1500); // Beach appears
-    setTimeout(() => setStage(2), 3500); // Couple walks in
-    setTimeout(() => setStage(3), 5500); // Proposal moment
+    setTimeout(() => setStage(1), 1000); // Beach appears
+    setTimeout(() => setStage(2), 2500); // Sravan starts walking
+    setTimeout(() => setStage(3), 5000); // Sravan kneels
+    setTimeout(() => setStage(4), 6500); // Proposal message
   };
 
   const handleAccept = () => {
     setAccepted(true);
-    setStage(4);
+    setStage(5);
   };
 
   const handleClose = () => {
@@ -36,12 +37,12 @@ const ProposeAnimation = () => {
     delay: i * 0.3,
   }));
 
-  // Generate footprints
-  const footprints = Array.from({ length: 8 }, (_, i) => ({
+  // Generate footprints that appear as Sravan walks
+  const footprints = Array.from({ length: 6 }, (_, i) => ({
     id: i,
-    left: 15 + i * 10,
-    delay: 2 + i * 0.2,
-    rotate: i % 2 === 0 ? -15 : 15,
+    left: 20 + i * 8,
+    delay: 2.5 + i * 0.4,
+    rotate: i % 2 === 0 ? -10 : 10,
   }));
 
   // Generate birds
@@ -117,7 +118,6 @@ const ProposeAnimation = () => {
                 className="relative"
               >
                 <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-b from-yellow-200 via-orange-300 to-orange-500 shadow-[0_0_100px_50px_rgba(255,200,100,0.4)]" />
-                {/* Sun reflection rays */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Sun className="w-20 h-20 md:w-28 md:h-28 text-yellow-100 opacity-60" />
                 </div>
@@ -150,7 +150,6 @@ const ProposeAnimation = () => {
               animate={{ y: 0 }}
               transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
             >
-              {/* Water gradient */}
               <div
                 className="absolute inset-0"
                 style={{
@@ -158,7 +157,6 @@ const ProposeAnimation = () => {
                 }}
               />
               
-              {/* Sun reflection on water */}
               <motion.div
                 className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-full"
                 style={{
@@ -168,7 +166,6 @@ const ProposeAnimation = () => {
                 transition={{ repeat: Infinity, duration: 2 }}
               />
 
-              {/* Animated Waves */}
               {waveParticles.map((wave) => (
                 <motion.div
                   key={wave.id}
@@ -195,7 +192,6 @@ const ProposeAnimation = () => {
                 background: "linear-gradient(180deg, #c2956e 0%, #a67c52 50%, #8b6b45 100%)",
               }}
             >
-              {/* Sand texture */}
               <div className="absolute inset-0 opacity-30" 
                 style={{
                   backgroundImage: "radial-gradient(circle at 20% 50%, #d4a76a 1px, transparent 1px), radial-gradient(circle at 80% 30%, #d4a76a 1px, transparent 1px)",
@@ -204,7 +200,7 @@ const ProposeAnimation = () => {
               />
             </motion.div>
 
-            {/* Footprints in sand */}
+            {/* Footprints appearing as Sravan walks */}
             <AnimatePresence>
               {stage >= 2 && footprints.map((fp) => (
                 <motion.div
@@ -216,137 +212,335 @@ const ProposeAnimation = () => {
                   }}
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 0.4, scale: 1 }}
-                  transition={{ delay: fp.delay - 2, duration: 0.3 }}
+                  transition={{ delay: fp.delay - 2.5, duration: 0.3 }}
                 >
                   👣
                 </motion.div>
               ))}
             </AnimatePresence>
 
-            {/* Couple Silhouettes on Beach */}
+            {/* Divya - Standing elegantly, waiting */}
+            <AnimatePresence>
+              {stage >= 1 && (
+                <motion.div
+                  className="absolute bottom-[16%] right-[15%] md:right-[25%] flex flex-col items-center"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 1 }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.5 }}
+                    className="mb-2 px-3 py-1 bg-pink-600/90 rounded-full shadow-lg"
+                  >
+                    <span className="font-serif text-white text-sm">Divya</span>
+                  </motion.div>
+                  
+                  <motion.div
+                    animate={stage >= 3 ? { y: [0, -3, 0] } : {}}
+                    transition={{ repeat: Infinity, duration: 2.5, delay: 0.3 }}
+                  >
+                    {/* Divya - Elegant woman in flowing dress */}
+                    <svg viewBox="0 0 100 180" className="w-20 h-40 md:w-28 md:h-52 drop-shadow-2xl">
+                      <defs>
+                        <linearGradient id="divyaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#1a1a2e" />
+                          <stop offset="100%" stopColor="#2d2d44" />
+                        </linearGradient>
+                        <linearGradient id="dressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#c44569" />
+                          <stop offset="50%" stopColor="#a13d5e" />
+                          <stop offset="100%" stopColor="#7d3051" />
+                        </linearGradient>
+                        <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stopColor="#1a1a1a" />
+                          <stop offset="100%" stopColor="#2d2d2d" />
+                        </linearGradient>
+                      </defs>
+                      
+                      {/* Long flowing hair */}
+                      <ellipse cx="50" cy="20" rx="18" ry="12" fill="url(#hairGrad)" />
+                      <path d="M 32 18 Q 25 40, 28 70 Q 30 75, 35 70 Q 33 45, 38 22" fill="url(#hairGrad)" />
+                      <path d="M 68 18 Q 75 40, 72 70 Q 70 75, 65 70 Q 67 45, 62 22" fill="url(#hairGrad)" />
+                      
+                      {/* Head with face features */}
+                      <ellipse cx="50" cy="26" rx="14" ry="16" fill="#f5d0c5" />
+                      {/* Eyes */}
+                      <ellipse cx="44" cy="24" rx="2" ry="1.5" fill="#1a1a1a" />
+                      <ellipse cx="56" cy="24" rx="2" ry="1.5" fill="#1a1a1a" />
+                      {/* Smile */}
+                      <path d="M 45 32 Q 50 36, 55 32" fill="none" stroke="#c44569" strokeWidth="1.5" strokeLinecap="round" />
+                      {/* Earrings */}
+                      <circle cx="36" cy="28" r="2" fill="#ffd700" />
+                      <circle cx="64" cy="28" r="2" fill="#ffd700" />
+                      
+                      {/* Neck */}
+                      <rect x="45" y="40" width="10" height="8" fill="#f5d0c5" />
+                      {/* Necklace */}
+                      <path d="M 40 48 Q 50 54, 60 48" fill="none" stroke="#ffd700" strokeWidth="2" />
+                      
+                      {/* Shoulders & upper body with elegant dress */}
+                      <path d="M 30 50 Q 35 48, 50 48 Q 65 48, 70 50 L 68 75 Q 50 78, 32 75 Z" fill="url(#dressGrad)" />
+                      
+                      {/* Arms - hands clasped to chest in emotional pose */}
+                      <path d="M 30 52 Q 20 58, 22 70 Q 25 72, 35 65 L 38 58" fill="#f5d0c5" />
+                      <path d="M 70 52 Q 80 58, 78 70 Q 75 72, 65 65 L 62 58" fill="#f5d0c5" />
+                      {/* Hands together at chest */}
+                      <ellipse cx="50" cy="68" rx="10" ry="6" fill="#f5d0c5" />
+                      
+                      {/* Elegant flowing dress with folds */}
+                      <path d="M 32 75 Q 15 120, 10 175 L 90 175 Q 85 120, 68 75 Q 50 82, 32 75" fill="url(#dressGrad)" />
+                      {/* Dress details */}
+                      <path d="M 25 100 Q 50 108, 75 100" fill="none" stroke="#8b3557" strokeWidth="1" opacity="0.5" />
+                      <path d="M 18 130 Q 50 142, 82 130" fill="none" stroke="#8b3557" strokeWidth="1" opacity="0.5" />
+                      <path d="M 12 160 Q 50 175, 88 160" fill="none" stroke="#8b3557" strokeWidth="1" opacity="0.5" />
+                      
+                      {/* Flower in hand after accepting - conditionally shown */}
+                      {accepted && (
+                        <>
+                          <circle cx="50" cy="62" r="8" fill="#ff6b6b" />
+                          <circle cx="46" cy="58" r="4" fill="#ff8888" />
+                          <circle cx="54" cy="58" r="4" fill="#ff8888" />
+                          <circle cx="46" cy="66" r="4" fill="#ff8888" />
+                          <circle cx="54" cy="66" r="4" fill="#ff8888" />
+                          <circle cx="50" cy="62" r="3" fill="#ffd700" />
+                        </>
+                      )}
+                    </svg>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Sravan - Walking animation then kneeling with flower */}
             <AnimatePresence>
               {stage >= 2 && (
                 <motion.div
-                  className="absolute bottom-[15%] left-1/2 transform -translate-x-1/2 flex items-end gap-4 md:gap-8"
-                  initial={{ x: "-50%", scale: 0.3, opacity: 0 }}
-                  animate={{ x: "-50%", scale: 1, opacity: 1 }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  className="absolute bottom-[16%] flex flex-col items-center"
+                  initial={{ left: "5%", opacity: 0 }}
+                  animate={{ 
+                    left: stage >= 3 ? "35%" : stage >= 2 ? "35%" : "5%",
+                    opacity: 1,
+                  }}
+                  transition={{ 
+                    left: { duration: 2.5, ease: "easeInOut" },
+                    opacity: { duration: 0.5 }
+                  }}
                 >
-                  {/* Sravan - Kneeling with ring */}
                   <motion.div
-                    className="relative flex flex-col items-center"
-                    initial={{ x: -50 }}
-                    animate={{ x: 0 }}
-                    transition={{ delay: 0.5, duration: 1 }}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 2 }}
+                    className="mb-2 px-3 py-1 bg-blue-600/90 rounded-full shadow-lg"
                   >
+                    <span className="font-serif text-white text-sm">Sravan</span>
+                  </motion.div>
+                  
+                  {/* Walking Sravan (stage 2) */}
+                  {stage === 2 && (
                     <motion.div
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.5 }}
-                      className="mb-2 px-3 py-1 bg-blue-600/90 rounded-full shadow-lg"
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{ repeat: Infinity, duration: 0.5 }}
                     >
-                      <span className="font-serif text-white text-sm">Sravan</span>
-                    </motion.div>
-                    
-                    <motion.div
-                      animate={stage >= 3 ? { y: [0, -3, 0] } : {}}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                      className="relative"
-                    >
-                      {/* Man kneeling - realistic silhouette */}
-                      <svg viewBox="0 0 120 140" className="w-24 h-32 md:w-32 md:h-44 drop-shadow-2xl">
+                      <svg viewBox="0 0 100 180" className="w-20 h-40 md:w-28 md:h-52 drop-shadow-2xl">
                         <defs>
-                          <linearGradient id="personGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="#0a0a0a" />
-                            <stop offset="100%" stopColor="#1a1a1a" />
+                          <linearGradient id="sravanWalkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#1a365d" />
+                            <stop offset="100%" stopColor="#2d4a6f" />
                           </linearGradient>
                         </defs>
-                        {/* Head */}
-                        <ellipse cx="55" cy="22" rx="14" ry="16" fill="url(#personGrad)" />
-                        {/* Neck */}
-                        <rect x="50" y="36" width="10" height="8" fill="url(#personGrad)" />
-                        {/* Torso - leaning forward */}
-                        <path d="M 35 44 Q 40 50, 45 75 L 70 75 Q 75 50, 75 44 Q 55 38, 35 44" fill="url(#personGrad)" />
-                        {/* Back arm reaching up with ring */}
-                        <path d="M 72 50 Q 95 35, 100 25 Q 102 22, 100 20 Q 98 18, 95 20 Q 88 28, 70 45" fill="url(#personGrad)" />
-                        {/* Front arm */}
-                        <path d="M 38 52 Q 25 60, 20 70 Q 18 75, 22 75 Q 30 72, 40 62" fill="url(#personGrad)" />
-                        {/* Kneeling leg (front) */}
-                        <path d="M 45 75 Q 35 90, 30 105 Q 28 115, 35 118 L 55 118 Q 55 105, 50 90 Q 48 80, 50 75" fill="url(#personGrad)" />
-                        {/* Back leg extended */}
-                        <path d="M 65 75 Q 85 85, 105 95 Q 115 100, 118 105 Q 120 110, 115 112 L 100 105 Q 80 95, 65 80" fill="url(#personGrad)" />
-                        {/* Ring */}
-                        <circle cx="98" cy="20" r="6" fill="none" stroke="#ffd700" strokeWidth="2" />
-                        <circle cx="98" cy="17" r="2" fill="#ffffff" />
-                      </svg>
-                    </motion.div>
-                  </motion.div>
-
-                  {/* Heart between */}
-                  <motion.div
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 2, type: "spring" }}
-                    className="absolute left-1/2 -top-12 transform -translate-x-1/2"
-                  >
-                    <motion.div
-                      animate={{ scale: [1, 1.3, 1], y: [0, -8, 0] }}
-                      transition={{ repeat: Infinity, duration: 1.2 }}
-                    >
-                      <Heart className="w-12 h-12 text-red-500 fill-red-500 drop-shadow-lg" />
-                    </motion.div>
-                  </motion.div>
-
-                  {/* Divya - Standing elegantly */}
-                  <motion.div
-                    className="relative flex flex-col items-center"
-                    initial={{ x: 50 }}
-                    animate={{ x: 0 }}
-                    transition={{ delay: 0.5, duration: 1 }}
-                  >
-                    <motion.div
-                      initial={{ opacity: 0, y: -20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.7 }}
-                      className="mb-2 px-3 py-1 bg-pink-600/90 rounded-full shadow-lg"
-                    >
-                      <span className="font-serif text-white text-sm">Divya</span>
-                    </motion.div>
-                    
-                    <motion.div
-                      animate={stage >= 3 ? { y: [0, -2, 0] } : {}}
-                      transition={{ repeat: Infinity, duration: 2.5, delay: 0.3 }}
-                    >
-                      {/* Woman standing - elegant dress silhouette */}
-                      <svg viewBox="0 0 100 160" className="w-20 h-36 md:w-28 md:h-48 drop-shadow-2xl">
-                        <defs>
-                          <linearGradient id="womanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stopColor="#0a0a0a" />
-                            <stop offset="100%" stopColor="#1a1a1a" />
-                          </linearGradient>
-                        </defs>
+                        
                         {/* Hair */}
-                        <ellipse cx="50" cy="18" rx="18" ry="10" fill="url(#womanGrad)" />
-                        <path d="M 32 18 Q 28 35, 30 50 Q 32 55, 38 50 Q 36 35, 38 22" fill="url(#womanGrad)" />
-                        <path d="M 68 18 Q 72 35, 70 50 Q 68 55, 62 50 Q 64 35, 62 22" fill="url(#womanGrad)" />
+                        <ellipse cx="50" cy="18" rx="16" ry="10" fill="#1a1a1a" />
+                        
                         {/* Head */}
-                        <ellipse cx="50" cy="24" rx="12" ry="14" fill="url(#womanGrad)" />
+                        <ellipse cx="50" cy="24" rx="14" ry="15" fill="#d4a574" />
+                        {/* Eyes */}
+                        <ellipse cx="44" cy="22" rx="2" ry="1.5" fill="#1a1a1a" />
+                        <ellipse cx="56" cy="22" rx="2" ry="1.5" fill="#1a1a1a" />
+                        {/* Smile */}
+                        <path d="M 45 30 Q 50 33, 55 30" fill="none" stroke="#8b6b45" strokeWidth="1.5" strokeLinecap="round" />
+                        
                         {/* Neck */}
-                        <rect x="45" y="36" width="10" height="8" fill="url(#womanGrad)" />
-                        {/* Shoulders & upper body */}
-                        <path d="M 32 44 Q 35 42, 50 42 Q 65 42, 68 44 L 65 65 Q 50 68, 35 65 Z" fill="url(#womanGrad)" />
-                        {/* Arms - hands together at chest (surprised/emotional pose) */}
-                        <path d="M 32 46 Q 22 50, 18 58 Q 16 62, 20 65 Q 28 62, 35 55" fill="url(#womanGrad)" />
-                        <path d="M 68 46 Q 78 50, 82 58 Q 84 62, 80 65 Q 72 62, 65 55" fill="url(#womanGrad)" />
-                        {/* Hands clasped at chest */}
-                        <ellipse cx="50" cy="62" rx="8" ry="6" fill="url(#womanGrad)" />
-                        {/* Elegant flowing dress */}
-                        <path d="M 35 65 Q 20 100, 15 150 L 85 150 Q 80 100, 65 65 Q 50 70, 35 65" fill="url(#womanGrad)" />
-                        {/* Dress details - subtle curves */}
-                        <path d="M 30 90 Q 50 95, 70 90" fill="none" stroke="#1f1f1f" strokeWidth="1" opacity="0.3" />
-                        <path d="M 22 120 Q 50 128, 78 120" fill="none" stroke="#1f1f1f" strokeWidth="1" opacity="0.3" />
+                        <rect x="45" y="38" width="10" height="8" fill="#d4a574" />
+                        
+                        {/* Torso - shirt */}
+                        <path d="M 30 48 Q 40 44, 50 44 Q 60 44, 70 48 L 68 95 Q 50 98, 32 95 Z" fill="url(#sravanWalkGrad)" />
+                        
+                        {/* Walking arms - one forward, one back */}
+                        <motion.path 
+                          d="M 30 50 Q 15 65, 20 85 L 25 83 Q 22 65, 32 55" 
+                          fill="#d4a574"
+                          animate={{ d: ["M 30 50 Q 15 65, 20 85 L 25 83 Q 22 65, 32 55", "M 30 50 Q 35 65, 40 85 L 45 83 Q 38 65, 32 55"] }}
+                          transition={{ repeat: Infinity, duration: 0.5 }}
+                        />
+                        <motion.path 
+                          d="M 70 50 Q 85 65, 80 85 L 75 83 Q 78 65, 68 55" 
+                          fill="#d4a574"
+                          animate={{ d: ["M 70 50 Q 85 65, 80 85 L 75 83 Q 78 65, 68 55", "M 70 50 Q 65 65, 60 85 L 55 83 Q 62 65, 68 55"] }}
+                          transition={{ repeat: Infinity, duration: 0.5 }}
+                        />
+                        
+                        {/* Pants */}
+                        <path d="M 35 95 L 30 130 L 25 175 L 40 175 L 45 130 L 50 100" fill="#2d3748" />
+                        <path d="M 50 100 L 55 130 L 60 175 L 75 175 L 70 130 L 65 95" fill="#2d3748" />
+                        
+                        {/* Walking legs animation */}
+                        <motion.g
+                          animate={{ rotate: [-10, 10] }}
+                          transition={{ repeat: Infinity, duration: 0.5 }}
+                          style={{ transformOrigin: "50px 95px" }}
+                        >
+                        </motion.g>
+                        
+                        {/* Flower in hand */}
+                        <g transform="translate(15, 80)">
+                          <line x1="0" y1="0" x2="0" y2="15" stroke="#228b22" strokeWidth="2" />
+                          <circle cx="0" cy="-2" r="6" fill="#ff6b6b" />
+                          <circle cx="-4" cy="-5" r="3" fill="#ff8888" />
+                          <circle cx="4" cy="-5" r="3" fill="#ff8888" />
+                          <circle cx="-4" cy="1" r="3" fill="#ff8888" />
+                          <circle cx="4" cy="1" r="3" fill="#ff8888" />
+                          <circle cx="0" cy="-2" r="2" fill="#ffd700" />
+                        </g>
                       </svg>
                     </motion.div>
+                  )}
+                  
+                  {/* Kneeling Sravan with flower (stage 3+) */}
+                  {stage >= 3 && !accepted && (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1, y: [0, -3, 0] }}
+                      transition={{ 
+                        scale: { duration: 0.5 },
+                        y: { repeat: Infinity, duration: 2 }
+                      }}
+                    >
+                      <svg viewBox="0 0 140 140" className="w-28 h-28 md:w-40 md:h-40 drop-shadow-2xl">
+                        <defs>
+                          <linearGradient id="sravanKneelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#1a365d" />
+                            <stop offset="100%" stopColor="#2d4a6f" />
+                          </linearGradient>
+                        </defs>
+                        
+                        {/* Hair */}
+                        <ellipse cx="50" cy="18" rx="14" ry="9" fill="#1a1a1a" />
+                        
+                        {/* Head - slightly looking up */}
+                        <ellipse cx="50" cy="25" rx="13" ry="14" fill="#d4a574" />
+                        {/* Eyes looking up */}
+                        <ellipse cx="44" cy="22" rx="2" ry="2" fill="#1a1a1a" />
+                        <ellipse cx="56" cy="22" rx="2" ry="2" fill="#1a1a1a" />
+                        {/* Hopeful smile */}
+                        <path d="M 44 30 Q 50 35, 56 30" fill="none" stroke="#8b6b45" strokeWidth="1.5" strokeLinecap="round" />
+                        
+                        {/* Neck */}
+                        <rect x="45" y="38" width="10" height="6" fill="#d4a574" />
+                        
+                        {/* Torso - leaning forward */}
+                        <path d="M 35 44 Q 42 42, 50 42 Q 58 42, 65 44 L 68 80 Q 50 85, 32 80 Z" fill="url(#sravanKneelGrad)" />
+                        
+                        {/* Arms reaching forward with flower */}
+                        <path d="M 65 50 Q 85 45, 105 35" fill="none" stroke="#d4a574" strokeWidth="8" strokeLinecap="round" />
+                        <circle cx="105" cy="35" r="5" fill="#d4a574" /> {/* Hand */}
+                        
+                        {/* Other arm on chest */}
+                        <path d="M 35 50 Q 30 60, 38 70" fill="none" stroke="#d4a574" strokeWidth="8" strokeLinecap="round" />
+                        
+                        {/* Kneeling leg (front) */}
+                        <path d="M 40 80 L 35 100 L 30 105 L 25 130 L 45 130 L 50 105 L 48 85" fill="#2d3748" />
+                        
+                        {/* Back leg extended */}
+                        <path d="M 55 80 Q 80 95, 120 105 L 125 115 L 115 120 L 75 108 Q 60 100, 52 85" fill="#2d3748" />
+                        
+                        {/* Flower being offered */}
+                        <motion.g 
+                          transform="translate(100, 20)"
+                          animate={{ rotate: [-5, 5, -5], y: [0, -3, 0] }}
+                          transition={{ repeat: Infinity, duration: 1.5 }}
+                        >
+                          <line x1="0" y1="10" x2="0" y2="25" stroke="#228b22" strokeWidth="3" />
+                          <circle cx="0" cy="5" r="10" fill="#ff6b6b" />
+                          <circle cx="-6" cy="0" r="5" fill="#ff8888" />
+                          <circle cx="6" cy="0" r="5" fill="#ff8888" />
+                          <circle cx="-6" cy="8" r="5" fill="#ff8888" />
+                          <circle cx="6" cy="8" r="5" fill="#ff8888" />
+                          <circle cx="0" cy="5" r="4" fill="#ffd700" />
+                          {/* Leaf */}
+                          <ellipse cx="-8" cy="18" rx="5" ry="3" fill="#228b22" transform="rotate(-30 -8 18)" />
+                        </motion.g>
+                      </svg>
+                    </motion.div>
+                  )}
+
+                  {/* Sravan standing happily after acceptance */}
+                  {accepted && (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1, y: [0, -5, 0] }}
+                      transition={{ 
+                        scale: { duration: 0.5 },
+                        y: { repeat: Infinity, duration: 1.5 }
+                      }}
+                    >
+                      <svg viewBox="0 0 100 180" className="w-20 h-40 md:w-28 md:h-52 drop-shadow-2xl">
+                        <defs>
+                          <linearGradient id="sravanHappyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#1a365d" />
+                            <stop offset="100%" stopColor="#2d4a6f" />
+                          </linearGradient>
+                        </defs>
+                        
+                        {/* Hair */}
+                        <ellipse cx="50" cy="18" rx="16" ry="10" fill="#1a1a1a" />
+                        
+                        {/* Head */}
+                        <ellipse cx="50" cy="24" rx="14" ry="15" fill="#d4a574" />
+                        {/* Happy eyes */}
+                        <path d="M 42 22 Q 44 20, 46 22" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" />
+                        <path d="M 54 22 Q 56 20, 58 22" fill="none" stroke="#1a1a1a" strokeWidth="2" strokeLinecap="round" />
+                        {/* Big smile */}
+                        <path d="M 42 30 Q 50 38, 58 30" fill="none" stroke="#8b6b45" strokeWidth="2" strokeLinecap="round" />
+                        
+                        {/* Neck */}
+                        <rect x="45" y="38" width="10" height="8" fill="#d4a574" />
+                        
+                        {/* Torso */}
+                        <path d="M 30 48 Q 40 44, 50 44 Q 60 44, 70 48 L 68 95 Q 50 98, 32 95 Z" fill="url(#sravanHappyGrad)" />
+                        
+                        {/* Arms raised in joy */}
+                        <path d="M 30 50 Q 15 40, 10 25" fill="none" stroke="#d4a574" strokeWidth="8" strokeLinecap="round" />
+                        <path d="M 70 50 Q 85 40, 90 25" fill="none" stroke="#d4a574" strokeWidth="8" strokeLinecap="round" />
+                        <circle cx="10" cy="25" r="5" fill="#d4a574" />
+                        <circle cx="90" cy="25" r="5" fill="#d4a574" />
+                        
+                        {/* Pants */}
+                        <path d="M 35 95 L 32 130 L 28 175 L 45 175 L 48 130 L 50 100" fill="#2d3748" />
+                        <path d="M 50 100 L 52 130 L 55 175 L 72 175 L 68 130 L 65 95" fill="#2d3748" />
+                      </svg>
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Heart between them when proposing */}
+            <AnimatePresence>
+              {stage >= 3 && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.5, type: "spring" }}
+                  className="absolute bottom-[45%] left-1/2 transform -translate-x-1/2"
+                >
+                  <motion.div
+                    animate={{ scale: [1, 1.3, 1], y: [0, -10, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.2 }}
+                  >
+                    <Heart className="w-16 h-16 text-red-500 fill-red-500 drop-shadow-lg" />
                   </motion.div>
                 </motion.div>
               )}
@@ -354,13 +548,13 @@ const ProposeAnimation = () => {
 
             {/* Proposal Message */}
             <AnimatePresence>
-              {stage >= 3 && !accepted && (
+              {stage >= 4 && !accepted && (
                 <motion.div
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -30 }}
                   transition={{ duration: 1 }}
-                  className="absolute top-[10%] left-0 right-0 text-center px-6 z-20"
+                  className="absolute top-[8%] left-0 right-0 text-center px-6 z-20"
                 >
                   <motion.h2
                     className="font-serif text-4xl md:text-6xl lg:text-7xl text-white mb-4 drop-shadow-lg"
@@ -376,7 +570,7 @@ const ProposeAnimation = () => {
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
                   >
-                    Divya, as the sun sets on this beautiful moment, my love for you only grows brighter. Will you be my forever?
+                    Divya, as the sun sets on this beautiful moment, my love for you only grows brighter. Will you accept this flower and be my forever?
                   </motion.p>
                   
                   <motion.div
@@ -389,7 +583,7 @@ const ProposeAnimation = () => {
                       className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-12 py-7 rounded-full text-xl font-serif shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105 border-2 border-white/30"
                     >
                       <Heart className="w-6 h-6 mr-3 fill-white animate-pulse" />
-                      Yes, Forever! 💍
+                      Yes, Forever! 🌹
                     </Button>
                   </motion.div>
                 </motion.div>
@@ -420,7 +614,7 @@ const ProposeAnimation = () => {
                       transition={{ duration: 2.5, delay: sparkle.delay, ease: "easeOut" }}
                       style={{ left: "50%", top: "40%" }}
                     >
-                      {["💕", "💖", "✨", "🎆", "💍", "❤️", "🌟", "💫"][Math.floor(Math.random() * 8)]}
+                      {["💕", "💖", "✨", "🎆", "🌹", "❤️", "🌟", "💫"][Math.floor(Math.random() * 8)]}
                     </motion.div>
                   ))}
 
@@ -442,7 +636,7 @@ const ProposeAnimation = () => {
                       }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
                     >
-                      She Said Yes! 💍
+                      She Said Yes! 🌹
                     </motion.h2>
                     <motion.p
                       className="font-serif text-2xl md:text-3xl text-orange-200"
