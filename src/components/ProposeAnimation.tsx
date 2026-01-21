@@ -227,12 +227,12 @@ const ProposeAnimation = () => {
             <AnimatePresence>
               {stage >= 2 && (
                 <motion.div
-                  className="absolute bottom-[15%] left-1/2 transform -translate-x-1/2 flex items-end gap-6"
+                  className="absolute bottom-[15%] left-1/2 transform -translate-x-1/2 flex items-end gap-4 md:gap-8"
                   initial={{ x: "-50%", scale: 0.3, opacity: 0 }}
                   animate={{ x: "-50%", scale: 1, opacity: 1 }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                 >
-                  {/* Sravan - Kneeling */}
+                  {/* Sravan - Kneeling with ring */}
                   <motion.div
                     className="relative flex flex-col items-center"
                     initial={{ x: -50 }}
@@ -251,38 +251,34 @@ const ProposeAnimation = () => {
                     <motion.div
                       animate={stage >= 3 ? { y: [0, -3, 0] } : {}}
                       transition={{ repeat: Infinity, duration: 2 }}
+                      className="relative"
                     >
-                      {/* Silhouette figure kneeling */}
-                      <svg viewBox="0 0 80 100" className="w-20 h-28 md:w-28 md:h-36 drop-shadow-2xl">
+                      {/* Man kneeling - realistic silhouette */}
+                      <svg viewBox="0 0 120 140" className="w-24 h-32 md:w-32 md:h-44 drop-shadow-2xl">
                         <defs>
-                          <linearGradient id="sravanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#1a1a2e" />
-                            <stop offset="100%" stopColor="#0f0f23" />
+                          <linearGradient id="personGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#0a0a0a" />
+                            <stop offset="100%" stopColor="#1a1a1a" />
                           </linearGradient>
                         </defs>
-                        <circle cx="40" cy="18" r="14" fill="url(#sravanGrad)" />
-                        <ellipse cx="40" cy="48" rx="16" ry="22" fill="url(#sravanGrad)" />
-                        <ellipse cx="32" cy="82" rx="10" ry="16" fill="url(#sravanGrad)" />
-                        <ellipse cx="55" cy="75" rx="14" ry="8" fill="url(#sravanGrad)" transform="rotate(-15 55 75)" />
-                        <ellipse cx="28" cy="45" rx="6" ry="16" fill="url(#sravanGrad)" transform="rotate(35 28 45)" />
-                        <ellipse cx="52" cy="38" rx="6" ry="18" fill="url(#sravanGrad)" transform="rotate(-25 52 38)" />
+                        {/* Head */}
+                        <ellipse cx="55" cy="22" rx="14" ry="16" fill="url(#personGrad)" />
+                        {/* Neck */}
+                        <rect x="50" y="36" width="10" height="8" fill="url(#personGrad)" />
+                        {/* Torso - leaning forward */}
+                        <path d="M 35 44 Q 40 50, 45 75 L 70 75 Q 75 50, 75 44 Q 55 38, 35 44" fill="url(#personGrad)" />
+                        {/* Back arm reaching up with ring */}
+                        <path d="M 72 50 Q 95 35, 100 25 Q 102 22, 100 20 Q 98 18, 95 20 Q 88 28, 70 45" fill="url(#personGrad)" />
+                        {/* Front arm */}
+                        <path d="M 38 52 Q 25 60, 20 70 Q 18 75, 22 75 Q 30 72, 40 62" fill="url(#personGrad)" />
+                        {/* Kneeling leg (front) */}
+                        <path d="M 45 75 Q 35 90, 30 105 Q 28 115, 35 118 L 55 118 Q 55 105, 50 90 Q 48 80, 50 75" fill="url(#personGrad)" />
+                        {/* Back leg extended */}
+                        <path d="M 65 75 Q 85 85, 105 95 Q 115 100, 118 105 Q 120 110, 115 112 L 100 105 Q 80 95, 65 80" fill="url(#personGrad)" />
+                        {/* Ring */}
+                        <circle cx="98" cy="20" r="6" fill="none" stroke="#ffd700" strokeWidth="2" />
+                        <circle cx="98" cy="17" r="2" fill="#ffffff" />
                       </svg>
-                      
-                      {/* Ring box */}
-                      <motion.div
-                        className="absolute -top-2 right-0"
-                        animate={{ 
-                          rotate: stage >= 3 ? [0, 5, -5, 0] : 0,
-                          scale: stage >= 3 ? [1, 1.1, 1] : 1,
-                        }}
-                        transition={{ repeat: Infinity, duration: 1.5 }}
-                      >
-                        <div className="w-8 h-8 bg-gradient-to-br from-red-800 to-red-950 rounded-sm shadow-lg flex items-center justify-center border border-red-700">
-                          <div className="w-4 h-4 rounded-full border-2 border-yellow-400 bg-gradient-to-br from-yellow-200 to-yellow-400 flex items-center justify-center">
-                            <div className="w-1.5 h-1.5 bg-white rounded-full shadow-lg" />
-                          </div>
-                        </div>
-                      </motion.div>
                     </motion.div>
                   </motion.div>
 
@@ -291,17 +287,17 @@ const ProposeAnimation = () => {
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 2, type: "spring" }}
-                    className="absolute left-1/2 -top-8 transform -translate-x-1/2"
+                    className="absolute left-1/2 -top-12 transform -translate-x-1/2"
                   >
                     <motion.div
-                      animate={{ scale: [1, 1.3, 1], y: [0, -5, 0] }}
+                      animate={{ scale: [1, 1.3, 1], y: [0, -8, 0] }}
                       transition={{ repeat: Infinity, duration: 1.2 }}
                     >
-                      <Heart className="w-10 h-10 text-red-500 fill-red-500 drop-shadow-lg" />
+                      <Heart className="w-12 h-12 text-red-500 fill-red-500 drop-shadow-lg" />
                     </motion.div>
                   </motion.div>
 
-                  {/* Divya - Standing */}
+                  {/* Divya - Standing elegantly */}
                   <motion.div
                     className="relative flex flex-col items-center"
                     initial={{ x: 50 }}
@@ -321,18 +317,34 @@ const ProposeAnimation = () => {
                       animate={stage >= 3 ? { y: [0, -2, 0] } : {}}
                       transition={{ repeat: Infinity, duration: 2.5, delay: 0.3 }}
                     >
-                      <svg viewBox="0 0 70 120" className="w-18 h-32 md:w-24 md:h-40 drop-shadow-2xl">
+                      {/* Woman standing - elegant dress silhouette */}
+                      <svg viewBox="0 0 100 160" className="w-20 h-36 md:w-28 md:h-48 drop-shadow-2xl">
                         <defs>
-                          <linearGradient id="divyaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#1a1a2e" />
-                            <stop offset="100%" stopColor="#0f0f23" />
+                          <linearGradient id="womanGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#0a0a0a" />
+                            <stop offset="100%" stopColor="#1a1a1a" />
                           </linearGradient>
                         </defs>
-                        <circle cx="35" cy="16" r="12" fill="url(#divyaGrad)" />
-                        <ellipse cx="35" cy="10" rx="14" ry="8" fill="url(#divyaGrad)" />
-                        <path d="M 18 32 Q 12 70 10 110 L 60 110 Q 58 70 52 32 Q 35 28 18 32" fill="url(#divyaGrad)" />
-                        <ellipse cx="26" cy="48" rx="6" ry="14" fill="url(#divyaGrad)" transform="rotate(25 26 48)" />
-                        <ellipse cx="44" cy="48" rx="6" ry="14" fill="url(#divyaGrad)" transform="rotate(-25 44 48)" />
+                        {/* Hair */}
+                        <ellipse cx="50" cy="18" rx="18" ry="10" fill="url(#womanGrad)" />
+                        <path d="M 32 18 Q 28 35, 30 50 Q 32 55, 38 50 Q 36 35, 38 22" fill="url(#womanGrad)" />
+                        <path d="M 68 18 Q 72 35, 70 50 Q 68 55, 62 50 Q 64 35, 62 22" fill="url(#womanGrad)" />
+                        {/* Head */}
+                        <ellipse cx="50" cy="24" rx="12" ry="14" fill="url(#womanGrad)" />
+                        {/* Neck */}
+                        <rect x="45" y="36" width="10" height="8" fill="url(#womanGrad)" />
+                        {/* Shoulders & upper body */}
+                        <path d="M 32 44 Q 35 42, 50 42 Q 65 42, 68 44 L 65 65 Q 50 68, 35 65 Z" fill="url(#womanGrad)" />
+                        {/* Arms - hands together at chest (surprised/emotional pose) */}
+                        <path d="M 32 46 Q 22 50, 18 58 Q 16 62, 20 65 Q 28 62, 35 55" fill="url(#womanGrad)" />
+                        <path d="M 68 46 Q 78 50, 82 58 Q 84 62, 80 65 Q 72 62, 65 55" fill="url(#womanGrad)" />
+                        {/* Hands clasped at chest */}
+                        <ellipse cx="50" cy="62" rx="8" ry="6" fill="url(#womanGrad)" />
+                        {/* Elegant flowing dress */}
+                        <path d="M 35 65 Q 20 100, 15 150 L 85 150 Q 80 100, 65 65 Q 50 70, 35 65" fill="url(#womanGrad)" />
+                        {/* Dress details - subtle curves */}
+                        <path d="M 30 90 Q 50 95, 70 90" fill="none" stroke="#1f1f1f" strokeWidth="1" opacity="0.3" />
+                        <path d="M 22 120 Q 50 128, 78 120" fill="none" stroke="#1f1f1f" strokeWidth="1" opacity="0.3" />
                       </svg>
                     </motion.div>
                   </motion.div>
