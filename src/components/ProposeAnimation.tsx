@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, X, Diamond, Sun } from "lucide-react";
+import { Heart, X, Diamond, Sun, Frown, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ProposeAnimation = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [stage, setStage] = useState(0); // 0: sunset, 1: beach, 2: sravan walking, 3: sravan kneeling, 4: message, 5: accepted
+  const [stage, setStage] = useState(0); // 0: sunset, 1: beach, 2: sravan walking, 3: sravan kneeling, 4: message, 5: accepted, 6: rejected
   const [accepted, setAccepted] = useState(false);
+  const [rejected, setRejected] = useState(false);
+
+  // WhatsApp notification config - replace with your phone number
+  const phoneNumber = "919876543210"; // Format: country code + number, no + or spaces
 
   const handlePropose = () => {
     setIsOpen(true);
     setStage(0);
     setAccepted(false);
+    setRejected(false);
     
     // Progressive reveal sequence
     setTimeout(() => setStage(1), 1000); // Beach appears
@@ -23,12 +28,26 @@ const ProposeAnimation = () => {
   const handleAccept = () => {
     setAccepted(true);
     setStage(5);
+    
+    // Send WhatsApp notification
+    const message = encodeURIComponent("💕 Great news! Divya said YES! 🌹💍 Forever begins now! 💖");
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+  };
+
+  const handleReject = () => {
+    setRejected(true);
+    setStage(6);
+    
+    // Send WhatsApp notification
+    const message = encodeURIComponent("😢 Unfortunately, Divya said no... 💔 But love will find a way! 🙏");
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
 
   const handleClose = () => {
     setIsOpen(false);
     setStage(0);
     setAccepted(false);
+    setRejected(false);
   };
 
   // Generate wave particles
@@ -54,11 +73,40 @@ const ProposeAnimation = () => {
   }));
 
   // Generate sparkles for celebration
-  const celebrationSparkles = Array.from({ length: 40 }, (_, i) => ({
+  const celebrationSparkles = Array.from({ length: 50 }, (_, i) => ({
     id: i,
     x: (Math.random() - 0.5) * 800,
     y: (Math.random() - 0.5) * 800,
     delay: Math.random() * 0.5,
+  }));
+
+  // Generate floating lanterns for celebration
+  const lanterns = Array.from({ length: 12 }, (_, i) => ({
+    id: i,
+    x: (Math.random() - 0.5) * 600,
+    delay: Math.random() * 2,
+  }));
+
+  // Generate shooting stars
+  const shootingStars = Array.from({ length: 8 }, (_, i) => ({
+    id: i,
+    startX: Math.random() * 100,
+    startY: Math.random() * 30,
+    delay: i * 0.8,
+  }));
+
+  // Generate rain for rejection
+  const rainDrops = Array.from({ length: 60 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    delay: Math.random() * 2,
+    duration: 0.5 + Math.random() * 0.5,
+  }));
+
+  // Generate tears for rejection
+  const tears = Array.from({ length: 8 }, (_, i) => ({
+    id: i,
+    delay: i * 0.3,
   }));
 
   return (
@@ -95,37 +143,81 @@ const ProposeAnimation = () => {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 overflow-hidden"
           >
-            {/* Gradient Sky Background */}
+            {/* Gradient Sky Background - changes based on state */}
             <motion.div
               className="absolute inset-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               style={{
-                background: "linear-gradient(180deg, #1a1a2e 0%, #16213e 15%, #e94560 40%, #ff6b6b 55%, #ffd93d 75%, #ff8c00 100%)",
+                background: rejected 
+                  ? "linear-gradient(180deg, #1a1a2e 0%, #16213e 30%, #1a1a2e 60%, #0d1b2a 100%)"
+                  : "linear-gradient(180deg, #1a1a2e 0%, #16213e 15%, #e94560 40%, #ff6b6b 55%, #ffd93d 75%, #ff8c00 100%)",
               }}
             />
 
-            {/* Animated Sun */}
-            <motion.div
-              className="absolute left-1/2 transform -translate-x-1/2"
-              initial={{ top: "30%", scale: 1.5 }}
-              animate={{ top: "45%", scale: 1 }}
-              transition={{ duration: 3, ease: "easeOut" }}
-            >
+            {/* Animated Sun - hides during rejection */}
+            {!rejected && (
               <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ repeat: Infinity, duration: 3 }}
-                className="relative"
+                className="absolute left-1/2 transform -translate-x-1/2"
+                initial={{ top: "30%", scale: 1.5 }}
+                animate={{ top: "45%", scale: 1 }}
+                transition={{ duration: 3, ease: "easeOut" }}
               >
-                <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-b from-yellow-200 via-orange-300 to-orange-500 shadow-[0_0_100px_50px_rgba(255,200,100,0.4)]" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Sun className="w-20 h-20 md:w-28 md:h-28 text-yellow-100 opacity-60" />
-                </div>
+                <motion.div
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ repeat: Infinity, duration: 3 }}
+                  className="relative"
+                >
+                  <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-b from-yellow-200 via-orange-300 to-orange-500 shadow-[0_0_100px_50px_rgba(255,200,100,0.4)]" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Sun className="w-20 h-20 md:w-28 md:h-28 text-yellow-100 opacity-60" />
+                  </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
+            )}
 
-            {/* Flying Birds */}
-            {birds.map((bird) => (
+            {/* Shooting stars during celebration */}
+            {accepted && shootingStars.map((star) => (
+              <motion.div
+                key={star.id}
+                className="absolute"
+                style={{ left: `${star.startX}%`, top: `${star.startY}%` }}
+                initial={{ opacity: 0 }}
+                animate={{
+                  x: [0, 200],
+                  y: [0, 100],
+                  opacity: [0, 1, 0],
+                }}
+                transition={{
+                  duration: 1,
+                  delay: star.delay,
+                  repeat: Infinity,
+                  repeatDelay: 3,
+                }}
+              >
+                <Star className="w-4 h-4 text-yellow-300 fill-yellow-300" />
+              </motion.div>
+            ))}
+
+            {/* Rain during rejection */}
+            {rejected && rainDrops.map((drop) => (
+              <motion.div
+                key={drop.id}
+                className="absolute w-0.5 h-4 bg-blue-300/60 rounded-full"
+                style={{ left: `${drop.x}%` }}
+                initial={{ top: "-5%", opacity: 0 }}
+                animate={{ top: "110%", opacity: [0, 1, 1, 0] }}
+                transition={{
+                  duration: drop.duration,
+                  delay: drop.delay,
+                  repeat: Infinity,
+                  ease: "linear",
+                }}
+              />
+            ))}
+
+            {/* Flying Birds - only when not rejected */}
+            {!rejected && birds.map((bird) => (
               <motion.div
                 key={bird.id}
                 className="absolute text-gray-800 text-2xl"
@@ -153,18 +245,22 @@ const ProposeAnimation = () => {
               <div
                 className="absolute inset-0"
                 style={{
-                  background: "linear-gradient(180deg, rgba(255,140,0,0.6) 0%, #1e3a5f 30%, #0d1b2a 100%)",
+                  background: rejected 
+                    ? "linear-gradient(180deg, rgba(30,58,95,0.8) 0%, #0d1b2a 30%, #0a1628 100%)"
+                    : "linear-gradient(180deg, rgba(255,140,0,0.6) 0%, #1e3a5f 30%, #0d1b2a 100%)",
                 }}
               />
               
-              <motion.div
-                className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-full"
-                style={{
-                  background: "linear-gradient(180deg, rgba(255,215,0,0.6) 0%, rgba(255,140,0,0.3) 50%, transparent 100%)",
-                }}
-                animate={{ scaleX: [1, 1.2, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-              />
+              {!rejected && (
+                <motion.div
+                  className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-full"
+                  style={{
+                    background: "linear-gradient(180deg, rgba(255,215,0,0.6) 0%, rgba(255,140,0,0.3) 50%, transparent 100%)",
+                  }}
+                  animate={{ scaleX: [1, 1.2, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                />
+              )}
 
               {waveParticles.map((wave) => (
                 <motion.div
@@ -189,7 +285,9 @@ const ProposeAnimation = () => {
               animate={{ y: 0 }}
               transition={{ delay: 1, duration: 1, ease: "easeOut" }}
               style={{
-                background: "linear-gradient(180deg, #c2956e 0%, #a67c52 50%, #8b6b45 100%)",
+                background: rejected
+                  ? "linear-gradient(180deg, #5a4a3a 0%, #4a3a2a 50%, #3a2a1a 100%)"
+                  : "linear-gradient(180deg, #c2956e 0%, #a67c52 50%, #8b6b45 100%)",
               }}
             >
               <div className="absolute inset-0 opacity-30" 
@@ -202,7 +300,7 @@ const ProposeAnimation = () => {
 
             {/* Footprints appearing as Sravan walks */}
             <AnimatePresence>
-              {stage >= 2 && footprints.map((fp) => (
+              {stage >= 2 && !rejected && footprints.map((fp) => (
                 <motion.div
                   key={fp.id}
                   className="absolute bottom-[12%] text-2xl opacity-40"
@@ -238,7 +336,7 @@ const ProposeAnimation = () => {
                   </motion.div>
                   
                   <motion.div
-                    animate={stage >= 3 ? { y: [0, -3, 0] } : {}}
+                    animate={rejected ? { y: [0, 3, 0] } : stage >= 3 ? { y: [0, -3, 0] } : {}}
                     transition={{ repeat: Infinity, duration: 2.5, delay: 0.3 }}
                   >
                     {/* Divya - Elegant woman in flowing dress */}
@@ -249,9 +347,9 @@ const ProposeAnimation = () => {
                           <stop offset="100%" stopColor="#2d2d44" />
                         </linearGradient>
                         <linearGradient id="dressGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#c44569" />
-                          <stop offset="50%" stopColor="#a13d5e" />
-                          <stop offset="100%" stopColor="#7d3051" />
+                          <stop offset="0%" stopColor={rejected ? "#6b7280" : "#c44569"} />
+                          <stop offset="50%" stopColor={rejected ? "#4b5563" : "#a13d5e"} />
+                          <stop offset="100%" stopColor={rejected ? "#374151" : "#7d3051"} />
                         </linearGradient>
                         <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                           <stop offset="0%" stopColor="#1a1a1a" />
@@ -266,11 +364,40 @@ const ProposeAnimation = () => {
                       
                       {/* Head with face features */}
                       <ellipse cx="50" cy="26" rx="14" ry="16" fill="#f5d0c5" />
-                      {/* Eyes */}
-                      <ellipse cx="44" cy="24" rx="2" ry="1.5" fill="#1a1a1a" />
-                      <ellipse cx="56" cy="24" rx="2" ry="1.5" fill="#1a1a1a" />
-                      {/* Smile */}
-                      <path d="M 45 32 Q 50 36, 55 32" fill="none" stroke="#c44569" strokeWidth="1.5" strokeLinecap="round" />
+                      {/* Eyes - sad if rejected */}
+                      {rejected ? (
+                        <>
+                          <path d="M 42 26 Q 44 24, 46 26" fill="none" stroke="#1a1a1a" strokeWidth="1.5" />
+                          <path d="M 54 26 Q 56 24, 58 26" fill="none" stroke="#1a1a1a" strokeWidth="1.5" />
+                          {/* Tears */}
+                          {tears.slice(0, 4).map((tear) => (
+                            <motion.ellipse
+                              key={tear.id}
+                              cx={tear.id < 2 ? 44 : 56}
+                              cy="28"
+                              rx="1"
+                              ry="2"
+                              fill="#60a5fa"
+                              initial={{ y: 0, opacity: 1 }}
+                              animate={{ y: 20, opacity: 0 }}
+                              transition={{ duration: 1, delay: tear.delay, repeat: Infinity }}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          <ellipse cx="44" cy="24" rx="2" ry="1.5" fill="#1a1a1a" />
+                          <ellipse cx="56" cy="24" rx="2" ry="1.5" fill="#1a1a1a" />
+                        </>
+                      )}
+                      {/* Smile or frown */}
+                      <path 
+                        d={rejected ? "M 45 34 Q 50 30, 55 34" : "M 45 32 Q 50 36, 55 32"} 
+                        fill="none" 
+                        stroke={rejected ? "#6b7280" : "#c44569"} 
+                        strokeWidth="1.5" 
+                        strokeLinecap="round" 
+                      />
                       {/* Earrings */}
                       <circle cx="36" cy="28" r="2" fill="#ffd700" />
                       <circle cx="64" cy="28" r="2" fill="#ffd700" />
@@ -292,9 +419,9 @@ const ProposeAnimation = () => {
                       {/* Elegant flowing dress with folds */}
                       <path d="M 32 75 Q 15 120, 10 175 L 90 175 Q 85 120, 68 75 Q 50 82, 32 75" fill="url(#dressGrad)" />
                       {/* Dress details */}
-                      <path d="M 25 100 Q 50 108, 75 100" fill="none" stroke="#8b3557" strokeWidth="1" opacity="0.5" />
-                      <path d="M 18 130 Q 50 142, 82 130" fill="none" stroke="#8b3557" strokeWidth="1" opacity="0.5" />
-                      <path d="M 12 160 Q 50 175, 88 160" fill="none" stroke="#8b3557" strokeWidth="1" opacity="0.5" />
+                      <path d="M 25 100 Q 50 108, 75 100" fill="none" stroke={rejected ? "#4b5563" : "#8b3557"} strokeWidth="1" opacity="0.5" />
+                      <path d="M 18 130 Q 50 142, 82 130" fill="none" stroke={rejected ? "#4b5563" : "#8b3557"} strokeWidth="1" opacity="0.5" />
+                      <path d="M 12 160 Q 50 175, 88 160" fill="none" stroke={rejected ? "#4b5563" : "#8b3557"} strokeWidth="1" opacity="0.5" />
                       
                       {/* Flower in hand after accepting - conditionally shown */}
                       {accepted && (
@@ -409,7 +536,7 @@ const ProposeAnimation = () => {
                   )}
                   
                   {/* Kneeling Sravan with flower (stage 3+) */}
-                  {stage >= 3 && !accepted && (
+                  {stage >= 3 && !accepted && !rejected && (
                     <motion.div
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1, y: [0, -3, 0] }}
@@ -523,16 +650,84 @@ const ProposeAnimation = () => {
                       </svg>
                     </motion.div>
                   )}
+
+                  {/* Sravan sad after rejection */}
+                  {rejected && (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <svg viewBox="0 0 100 180" className="w-20 h-40 md:w-28 md:h-52 drop-shadow-2xl">
+                        <defs>
+                          <linearGradient id="sravanSadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#374151" />
+                            <stop offset="100%" stopColor="#4b5563" />
+                          </linearGradient>
+                        </defs>
+                        
+                        {/* Hair */}
+                        <ellipse cx="50" cy="18" rx="16" ry="10" fill="#1a1a1a" />
+                        
+                        {/* Head - looking down */}
+                        <ellipse cx="50" cy="26" rx="14" ry="15" fill="#d4a574" />
+                        {/* Sad eyes */}
+                        <path d="M 42 24 Q 44 22, 46 24" fill="none" stroke="#1a1a1a" strokeWidth="1.5" />
+                        <path d="M 54 24 Q 56 22, 58 24" fill="none" stroke="#1a1a1a" strokeWidth="1.5" />
+                        {/* Tears */}
+                        {tears.slice(4).map((tear) => (
+                          <motion.ellipse
+                            key={tear.id}
+                            cx={tear.id < 6 ? 44 : 56}
+                            cy="28"
+                            rx="1"
+                            ry="2"
+                            fill="#60a5fa"
+                            initial={{ y: 0, opacity: 1 }}
+                            animate={{ y: 20, opacity: 0 }}
+                            transition={{ duration: 1, delay: tear.delay, repeat: Infinity }}
+                          />
+                        ))}
+                        {/* Frown */}
+                        <path d="M 42 34 Q 50 28, 58 34" fill="none" stroke="#8b6b45" strokeWidth="2" strokeLinecap="round" />
+                        
+                        {/* Neck */}
+                        <rect x="45" y="40" width="10" height="8" fill="#d4a574" />
+                        
+                        {/* Torso - slumped */}
+                        <path d="M 30 50 Q 40 46, 50 46 Q 60 46, 70 50 L 68 95 Q 50 98, 32 95 Z" fill="url(#sravanSadGrad)" />
+                        
+                        {/* Arms hanging down sadly */}
+                        <path d="M 30 52 Q 20 70, 22 100" fill="none" stroke="#d4a574" strokeWidth="8" strokeLinecap="round" />
+                        <path d="M 70 52 Q 80 70, 78 100" fill="none" stroke="#d4a574" strokeWidth="8" strokeLinecap="round" />
+                        <circle cx="22" cy="100" r="5" fill="#d4a574" />
+                        <circle cx="78" cy="100" r="5" fill="#d4a574" />
+                        
+                        {/* Dropped flower on ground */}
+                        <g transform="translate(50, 165)">
+                          <line x1="0" y1="0" x2="10" y2="5" stroke="#228b22" strokeWidth="2" />
+                          <circle cx="12" cy="8" r="5" fill="#ff6b6b" opacity="0.6" />
+                          <circle cx="10" cy="5" r="2.5" fill="#ff8888" opacity="0.6" />
+                          <circle cx="14" cy="5" r="2.5" fill="#ff8888" opacity="0.6" />
+                        </g>
+                        
+                        {/* Pants */}
+                        <path d="M 35 95 L 32 130 L 28 175 L 45 175 L 48 130 L 50 100" fill="#2d3748" />
+                        <path d="M 50 100 L 52 130 L 55 175 L 72 175 L 68 130 L 65 95" fill="#2d3748" />
+                      </svg>
+                    </motion.div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* Heart between them when proposing */}
             <AnimatePresence>
-              {stage >= 3 && (
+              {stage >= 3 && !rejected && (
                 <motion.div
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
                   transition={{ delay: 0.5, type: "spring" }}
                   className="absolute bottom-[45%] left-1/2 transform -translate-x-1/2"
                 >
@@ -546,9 +741,28 @@ const ProposeAnimation = () => {
               )}
             </AnimatePresence>
 
-            {/* Proposal Message */}
+            {/* Broken heart for rejection */}
             <AnimatePresence>
-              {stage >= 4 && !accepted && (
+              {rejected && (
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="absolute bottom-[45%] left-1/2 transform -translate-x-1/2"
+                >
+                  <motion.div
+                    animate={{ y: [0, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="text-6xl"
+                  >
+                    💔
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Proposal Message with Yes & Reject buttons */}
+            <AnimatePresence>
+              {stage >= 4 && !accepted && !rejected && (
                 <motion.div
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -574,6 +788,7 @@ const ProposeAnimation = () => {
                   </motion.p>
                   
                   <motion.div
+                    className="flex flex-col sm:flex-row gap-4 justify-center items-center"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 1, type: "spring", stiffness: 200 }}
@@ -584,6 +799,15 @@ const ProposeAnimation = () => {
                     >
                       <Heart className="w-6 h-6 mr-3 fill-white animate-pulse" />
                       Yes, Forever! 🌹
+                    </Button>
+                    
+                    <Button
+                      onClick={handleReject}
+                      variant="outline"
+                      className="bg-gray-800/50 hover:bg-gray-700/60 text-white/80 hover:text-white px-8 py-6 rounded-full text-lg font-serif shadow-xl transition-all duration-300 hover:scale-105 border-2 border-white/20"
+                    >
+                      <Frown className="w-5 h-5 mr-2 opacity-70" />
+                      Not Yet...
                     </Button>
                   </motion.div>
                 </motion.div>
@@ -598,6 +822,20 @@ const ProposeAnimation = () => {
                   animate={{ opacity: 1 }}
                   className="absolute inset-0 flex items-center justify-center z-30"
                 >
+                  {/* Floating Lanterns */}
+                  {lanterns.map((lantern) => (
+                    <motion.div
+                      key={lantern.id}
+                      className="absolute text-4xl"
+                      initial={{ y: "100vh", x: lantern.x, opacity: 0 }}
+                      animate={{ y: "-100vh", opacity: [0, 1, 1, 0] }}
+                      transition={{ duration: 8, delay: lantern.delay, ease: "easeOut" }}
+                      style={{ left: "50%" }}
+                    >
+                      🏮
+                    </motion.div>
+                  ))}
+
                   {/* Fireworks/Sparkles */}
                   {celebrationSparkles.map((sparkle) => (
                     <motion.div
@@ -614,7 +852,7 @@ const ProposeAnimation = () => {
                       transition={{ duration: 2.5, delay: sparkle.delay, ease: "easeOut" }}
                       style={{ left: "50%", top: "40%" }}
                     >
-                      {["💕", "💖", "✨", "🎆", "🌹", "❤️", "🌟", "💫"][Math.floor(Math.random() * 8)]}
+                      {["💕", "💖", "✨", "🎆", "🌹", "❤️", "🌟", "💫", "🎊", "💍"][Math.floor(Math.random() * 10)]}
                     </motion.div>
                   ))}
 
@@ -624,6 +862,13 @@ const ProposeAnimation = () => {
                     transition={{ type: "spring", stiffness: 100 }}
                     className="text-center z-40 bg-black/30 backdrop-blur-sm px-12 py-8 rounded-3xl"
                   >
+                    <motion.div
+                      className="mb-4"
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    >
+                      <Sparkles className="w-12 h-12 text-yellow-400 mx-auto" />
+                    </motion.div>
                     <motion.h2
                       className="font-serif text-5xl md:text-7xl text-white mb-6"
                       animate={{ 
@@ -636,7 +881,7 @@ const ProposeAnimation = () => {
                       }}
                       transition={{ repeat: Infinity, duration: 1.5 }}
                     >
-                      She Said Yes! 🌹
+                      She Said Yes! 💍
                     </motion.h2>
                     <motion.p
                       className="font-serif text-2xl md:text-3xl text-orange-200"
@@ -653,6 +898,53 @@ const ProposeAnimation = () => {
                       transition={{ delay: 1 }}
                     >
                       Forever begins now... 🌅
+                    </motion.p>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Rejection Message */}
+            <AnimatePresence>
+              {rejected && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="absolute inset-0 flex items-center justify-center z-30"
+                >
+                  <motion.div
+                    initial={{ scale: 0, y: 50 }}
+                    animate={{ scale: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 100 }}
+                    className="text-center z-40 bg-gray-900/60 backdrop-blur-sm px-12 py-8 rounded-3xl border border-gray-600/30"
+                  >
+                    <motion.div
+                      className="mb-4"
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    >
+                      <Frown className="w-12 h-12 text-gray-400 mx-auto" />
+                    </motion.div>
+                    <motion.h2
+                      className="font-serif text-4xl md:text-5xl text-gray-200 mb-6"
+                    >
+                      Maybe Someday... 💔
+                    </motion.h2>
+                    <motion.p
+                      className="font-serif text-xl md:text-2xl text-gray-400"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                    >
+                      True love waits forever
+                    </motion.p>
+                    <motion.p
+                      className="font-sans text-md text-gray-500 mt-4"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1 }}
+                    >
+                      The best things in life are worth waiting for... 🌙
                     </motion.p>
                   </motion.div>
                 </motion.div>
