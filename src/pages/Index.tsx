@@ -6,6 +6,7 @@ import FloatingHearts from "@/components/FloatingHearts";
 import LoveCounter from "@/components/LoveCounter";
 import Timeline from "@/components/Timeline";
 import ProposeAnimation from "@/components/ProposeAnimation";
+import FlirtButton from "@/components/FlirtButton";
 
 const Index = () => {
   // Set your relationship start date here
@@ -15,6 +16,7 @@ const Index = () => {
     <main className="min-h-screen relative">
       <FloatingHearts />
       <ProposeAnimation />
+      <FlirtButton />
       <HeroSection />
       <LoveCounter targetDate={relationshipStartDate} />
       <Timeline />
