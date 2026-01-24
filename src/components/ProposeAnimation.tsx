@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, X, Diamond, Sun, Frown, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ProposalMusic from "./ProposalMusic";
 
 const ProposeAnimation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -132,6 +133,8 @@ const ProposeAnimation = () => {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 overflow-hidden"
           >
+            {/* Proposal Music */}
+            <ProposalMusic isPlaying={isOpen} />
             {/* Gradient Sky Background - changes based on state */}
             <motion.div
               className="absolute inset-0"
