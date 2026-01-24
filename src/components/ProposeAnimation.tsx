@@ -9,9 +9,6 @@ const ProposeAnimation = () => {
   const [accepted, setAccepted] = useState(false);
   const [rejected, setRejected] = useState(false);
 
-  // WhatsApp notification config - replace with your phone number
-  const phoneNumber = "919876543210"; // Format: country code + number, no + or spaces
-
   const handlePropose = () => {
     setIsOpen(true);
     setStage(0);
@@ -28,19 +25,11 @@ const ProposeAnimation = () => {
   const handleAccept = () => {
     setAccepted(true);
     setStage(5);
-    
-    // Send WhatsApp notification
-    const message = encodeURIComponent("💕 Great news! Divya said YES! 🌹💍 Forever begins now! 💖");
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
 
   const handleReject = () => {
     setRejected(true);
     setStage(6);
-    
-    // Send WhatsApp notification
-    const message = encodeURIComponent("😢 Unfortunately, Divya said no... 💔 But love will find a way! 🙏");
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
   };
 
   const handleClose = () => {

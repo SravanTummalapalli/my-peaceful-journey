@@ -9,7 +9,7 @@ import ProposeAnimation from "@/components/ProposeAnimation";
 
 const Index = () => {
   // Set your relationship start date here
-  const relationshipStartDate = new Date("2023-01-01");
+  const relationshipStartDate = new Date("2025-10-06");
 
   return (
     <main className="min-h-screen relative">
