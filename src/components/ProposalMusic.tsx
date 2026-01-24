@@ -53,7 +53,7 @@ const ProposalMusic = ({ isPlaying }: ProposalMusicProps) => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5 }}
         onClick={toggleMute}
-        className="fixed top-4 right-4 z-[60] p-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 transition-colors"
+        className="fixed top-4 left-4 z-[60] p-3 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 transition-colors"
         aria-label={isMuted ? "Unmute music" : "Mute music"}
       >
         {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
