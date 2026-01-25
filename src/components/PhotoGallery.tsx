@@ -4,10 +4,19 @@ import { useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, Camera } from "lucide-react";
 
+// Import gallery images - Replace these with your own photos using the same filenames
+import photo1 from "@/assets/gallery/photo-1.jpg";
+import photo2 from "@/assets/gallery/photo-2.jpg";
+import photo3 from "@/assets/gallery/photo-3.jpg";
+import photo4 from "@/assets/gallery/photo-4.jpg";
+import photo5 from "@/assets/gallery/photo-5.jpg";
+import photo6 from "@/assets/gallery/photo-6.jpg";
+
 interface PhotoMemory {
   id: number;
   caption: string;
   date: string;
+  image: string;
 }
 
 interface Feeling {
@@ -21,12 +30,12 @@ const PhotoGallery = () => {
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
   const memories: PhotoMemory[] = [
-    { id: 1, caption: "Our first adventure together", date: "The Beginning" },
-    { id: 2, caption: "That sunset we'll never forget", date: "A Perfect Day" },
-    { id: 3, caption: "Dancing in the rain", date: "Pure Joy" },
-    { id: 4, caption: "Where you said yes", date: "Forever" },
-    { id: 5, caption: "Building our dreams", date: "Together" },
-    { id: 6, caption: "Every moment with you", date: "Always" },
+    { id: 1, caption: "Our first adventure together", date: "The Beginning", image: photo1 },
+    { id: 2, caption: "That sunset we'll never forget", date: "A Perfect Day", image: photo2 },
+    { id: 3, caption: "Dancing in the rain", date: "Pure Joy", image: photo3 },
+    { id: 4, caption: "Where you said yes", date: "Forever", image: photo4 },
+    { id: 5, caption: "Building our dreams", date: "Together", image: photo5 },
+    { id: 6, caption: "Every moment with you", date: "Always", image: photo6 },
   ];
 
   const feelings: Feeling[] = [
@@ -108,16 +117,11 @@ const PhotoGallery = () => {
                     className="group relative"
                   >
                     <div className="relative aspect-[4/5] overflow-hidden rounded-lg shadow-soft bg-card">
-                      <div className="absolute inset-0 bg-gradient-to-br from-soft-blush via-warm-cream to-accent flex items-center justify-center">
-                        <div className="text-center p-6">
-                          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
-                            <span className="text-2xl">📷</span>
-                          </div>
-                          <p className="font-serif text-sm text-muted-foreground italic">
-                            Add your photo here
-                          </p>
-                        </div>
-                      </div>
+                      <img 
+                        src={memory.image} 
+                        alt={memory.caption}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
                         <div className="p-6 text-primary-foreground">
                           <span className="block font-sans text-xs tracking-[0.2em] uppercase text-primary-foreground/70 mb-1">
