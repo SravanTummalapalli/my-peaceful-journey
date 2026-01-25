@@ -7,6 +7,11 @@ import LoveCounter from "@/components/LoveCounter";
 import Timeline from "@/components/Timeline";
 import ProposeAnimation from "@/components/ProposeAnimation";
 import FlirtButton from "@/components/FlirtButton";
+import SpinWheel from "@/components/SpinWheel";
+import ScratchCard from "@/components/ScratchCard";
+import SecretMessage from "@/components/SecretMessage";
+import DailyLoveNote from "@/components/DailyLoveNote";
+import AnniversaryCountdown from "@/components/AnniversaryCountdown";
 
 const Index = () => {
   // Set your relationship start date here
@@ -17,8 +22,13 @@ const Index = () => {
       <FloatingHearts />
       <ProposeAnimation />
       <FlirtButton />
+      <SpinWheel />
+      <ScratchCard />
       <HeroSection />
       <LoveCounter targetDate={relationshipStartDate} />
+      <AnniversaryCountdown />
+      <DailyLoveNote />
+      <SecretMessage />
       <Timeline />
       <StorySection />
       <PhotoGallery />
