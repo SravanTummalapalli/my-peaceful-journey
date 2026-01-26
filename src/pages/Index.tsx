@@ -12,6 +12,7 @@ import ScratchCard from "@/components/ScratchCard";
 import SecretMessage from "@/components/SecretMessage";
 import DailyLoveNote from "@/components/DailyLoveNote";
 import AnniversaryCountdown from "@/components/AnniversaryCountdown";
+import TruthOrDare from "@/components/TruthOrDare";
 
 const Index = () => {
   // Set your relationship start date here
@@ -24,6 +25,7 @@ const Index = () => {
       <FlirtButton />
       <SpinWheel />
       <ScratchCard />
+      <TruthOrDare />
       <HeroSection />
       <LoveCounter targetDate={relationshipStartDate} />
       <AnniversaryCountdown />
