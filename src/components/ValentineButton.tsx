@@ -46,7 +46,7 @@ const ValentineButton = () => {
   return (
     <>
       <motion.div
-        className="fixed bottom-8 right-24 z-40"
+        className="fixed bottom-24 right-8 z-40"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 3, type: "spring", stiffness: 200 }}
